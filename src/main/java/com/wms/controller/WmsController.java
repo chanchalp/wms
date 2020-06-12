@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +27,11 @@ public class WmsController {
 	
 	public static final Logger LOGGER = Logger.getLogger(WmsController.class);
 	
+	@GetMapping("/health")
+	public String healthCheck() {
+		return "WMS Server is up and running";
+	}
+	
 	@RequestMapping(value="/receiveOrder", method=RequestMethod.POST, headers ="Accept=application/json")
 	public ResponseEntity<Response> receiveOrder(@RequestBody List<WmsOrder> listWmsOrder, HttpServletRequest request) throws Exception{
 		LOGGER.info("receiveOrder start... " );
@@ -34,7 +40,6 @@ public class WmsController {
 			LOGGER.info("Order received from Integrator with order data : ");
 			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 			String json = ow.writeValueAsString(listWmsOrder);
-			//System.out.println(json);
 			LOGGER.info(json);
 			response.setResponseCode(200);
 			response.setMessage("Order received to wms successfully.");
